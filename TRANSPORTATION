@@ -1,0 +1,32 @@
+%%transportation
+clear all
+clc
+cost=[2 4 5;4 3 3;5 1 7;1 4 6]
+supply=[4 8 5 12]
+demand=[6 8 15]
+
+%%balanced problem
+[m,n]=size(cost)
+if sum(supply)==sum(demand)
+    disp('balanced problem')
+elseif sum(supply)<sum(demand)
+    cost=[cost;zeros(1,n)]
+    supply=[supply sum(demand)-sum(supply)]
+else
+    cost=[cost zeros(m,1)]
+    demand=[demand sum(supply)-sum(demand)]
+end
+
+while any(supply>0)
+min_c=min(min(cost))
+[row,col]=find(cost==min_c)
+z=min(supply(row),demand(col))
+[allocation,index]=max(z)
+supply(row(index))=supply(row(index))-allocation
+demand(col(index))=demand(col(index))-allocation
+cost(row(index),col(index))=inf
+allocation_m(row(index),col(index))=allocation
+end
+
+cost_mat=a_cost.*allocation_m
+total_cost=sum(sum(cost_mat))
